@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiaStyles | Cart</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <img src="./Larana-removebg-preview.png" alt="LiaClothing Logo" />
+      </a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="cart.html" class="active">Cart</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="cart-section">
+      <h2>Your Cart</h2>
+      <div id="cart-items"></div>
+      <div class="cart-summary">
+        <p><strong>Total:</strong> $<span id="total-amount">0.00</span></p>
+        <a href="checkout.html" class="btn">Proceed to Checkout</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 LiaStyles. All rights reserved.</p>
+  </footer>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateCart() {
+      const cartItemsDiv = document.getElementById('cart-items');
+      const totalAmountSpan = document.getElementById('total-amount');
+      cartItemsDiv.innerHTML = '';
+
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+        totalAmountSpan.textContent = '0.00';
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('cart-item');
+        itemDiv.innerHTML = `
+          <p><strong>${item.name}</strong></p>
+          <p>Price: $${item.price.toFixed(2)}</p>
+          <p>
+            Quantity: 
+            <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="quantity-input" />
+          </p>
+          <p>Subtotal: $${itemTotal.toFixed(2)}</p>
+          <button class="remove-btn" data-index="${index}">Remove</button>
+          <hr />
+        `;
+        cartItemsDiv.appendChild(itemDiv);
+      });
+
+      totalAmountSpan.textContent = total.toFixed(2);
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-btn')) {
+        const index = e.target.getAttribute('data-index');
+        cart.splice(index, 1);
+        updateCart();
+      }
+    });
+
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('quantity-input')) {
+        const index = e.target.getAttribute('data-index');
+        const newQty = parseInt(e.target.value);
+        if (newQty > 0) {
+          cart[index].quantity = newQty;
+          updateCart();
+        }
+      }
+    });
+
+    updateCart();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiaStyles | Checkout</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+</head>
+<body>
+
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <img src="Larana-removebg-preview.png" alt="LiaClothing Logo" />
+      </a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="checkout-section">
+      <h2>Checkout</h2>
+
+      <form id="checkout-form">
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Shipping Address</label>
+          <textarea id="address" required></textarea>
+        </div>
+
+        <h3>Card Details (mocked)</h3>
+        <div class="form-group">
+          <label for="card-number">Card Number</label>
+          <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="expiry">Expiry Date</label>
+            <input type="text" id="expiry" placeholder="MM/YY" required />
+          </div>
+          <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" placeholder="123" required />
+          </div>
+        </div>
+
+        <button class="pay-btn" type="button" onclick="payWithPaystack()">Pay Now</button>
+
+
+      </form>
+
+      <div id="order-success" class="hidden">
+        <p>✅ Thank you for your order, <span id="customer-name"></span>!</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 LiaStyles. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('checkout-form');
+    const successMsg = document.getElementById('order-success');
+    const nameSpan = document.getElementById('customer-name');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('fullname').value;
+
+      // Simulate placing order
+      localStorage.removeItem('cart'); // Clear cart after order
+      form.style.display = 'none';
+      nameSpan.textContent = name;
+      successMsg.classList.remove('hidden');
+    });
+    function payWithPaystack() {
+  let handler = PaystackPop.setup({
+    key: 'YOUR_PUBLIC_KEY', // Replace with your public key
+    email: 'customer@example.com', // Get user's email dynamically if you want
+    amount: 150000, // Amount in **kobo** (150000 = ₦1,500)
+    currency: "NGN",
+    ref: '' + Math.floor(Math.random() * 1000000000 + 1), // Random reference number
+    callback: function(response) {
+      alert('✅ Payment complete! Reference: ' + response.reference);
+      // Here you can redirect to a success page or update your backend
+    },
+    onClose: function() {
+      alert('❌ Payment window closed.');
+    }
+  });
+  handler.openIframe();
+}
+let email = document.getElementById("email").value;
+let totalAmount = cartTotal * 100; // Convert to kobo
+
+  </script>
+
+</body>
+</html>
